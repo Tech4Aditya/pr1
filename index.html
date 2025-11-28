@@ -1,183 +1,234 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Apology — Make It Right</title>
-  <style>
-    :root{ --bg:#0b1220; --card:#071018; --accent:#ff7a6b; --accent2:#7ee3b8; --muted:rgba(255,255,255,0.7); font-family:Inter, system-ui, -apple-system, Helvetica, Arial; }
-    html,body{height:100%;margin:0;background:linear-gradient(180deg,#07121a,#08131d);color:#eaf6f1}
-    .wrap{min-height:100%;display:flex;align-items:center;justify-content:center;padding:36px}
-    .card{width:100%;max-width:980px;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);border-radius:14px;padding:22px;box-shadow:0 10px 40px rgba(2,6,23,0.6);display:grid;grid-template-columns:1fr 360px;gap:18px}
-    h1{margin:0;font-size:24px}
-    p.lead{margin:6px 0 14px;color:var(--muted)}
-    .left{display:flex;flex-direction:column;gap:12px}
-    .controls{display:flex;gap:10px;flex-wrap:wrap}
-    button.primary{background:linear-gradient(90deg,var(--accent),#ff6a5a);border:0;color:#111;padding:10px 14px;border-radius:10px;font-weight:700;cursor:pointer}
-    button.ghost{background:transparent;border:1px solid rgba(255,255,255,0.04);padding:9px 12px;border-radius:10px;color:var(--muted);cursor:pointer}
-    textarea{width:100%;min-height:96px;border-radius:10px;padding:12px;border:1px solid rgba(255,255,255,0.03);background:transparent;color:inherit;resize:vertical}
-    .panel{background:rgba(255,255,255,0.02);padding:12px;border-radius:10px}
-    ul{margin:6px 0 0;padding-left:18px;color:var(--muted)}
-    .small{font-size:13px;padding:8px 10px}
-    footer{grid-column:1/-1;margin-top:8px;color:var(--muted);font-size:13px;text-align:center}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Daily Uplift</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Use Inter font family -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Playfair+Display:wght@700&display=swap');
 
-    .gesture{display:flex;gap:8px;align-items:center}
-    .flower{width:64px;height:64px;border-radius:12px;background:linear-gradient(180deg,#ffdde1,#ffdbe6);display:flex;align-items:center;justify-content:center;color:#3b0d1a;font-weight:700}
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f0f9ff 0%, #c4e9ff 100%); /* Soft sky gradient */
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
 
-    @media (max-width:920px){.card{grid-template-columns:1fr;}.left{order:1}.right{order:2}}
-  </style>
+        /* Custom glass effect styles */
+        .card-hidden {
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out, opacity 0.5s;
+        }
+
+        .card-revealed {
+            background: linear-gradient(135deg, #ffffff 0%, #f3e8ff 100%);
+            box-shadow: 0 10px 30px rgba(138, 43, 226, 0.2), 0 0 15px #d4affd;
+            border: 2px solid #a370e0;
+            cursor: default;
+            transition: transform 0.5s ease, box-shadow 0.5s ease;
+        }
+
+        .card-hidden:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .hidden-text {
+            color: #93c5fd; /* light blue for hidden text */
+            font-weight: 800;
+            font-size: 1.5rem;
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
+        }
+
+        .revealed-title {
+            font-family: 'Playfair Display', serif;
+            color: #7c3aed; /* Deep purple */
+            font-size: 1.75rem;
+        }
+
+        .revealed-message {
+            color: #4b5563; /* Gray */
+            font-weight: 600;
+        }
+    </style>
 </head>
-<body>
-  <div class="wrap">
-    <div class="card" role="application" aria-label="Apology helper">
-      <div class="left">
-        <h1>Make it right — apology builder</h1>
-        <p class="lead">You messed up. Fine. Say sorry like you mean it. Pick a tone, craft an honest message, and deliver a small gesture (virtual or real).</p>
+<body class="selection:bg-indigo-300 selection:text-white">
 
-        <div class="panel">
-          <label><strong>Pick the tone</strong></label>
-          <div class="controls" style="margin-top:8px">
-            <button class="ghost small" data-tone="sincere">Sincere</button>
-            <button class="ghost small" data-tone="light">Light + Warm</button>
-            <button class="ghost small" data-tone="direct">Straightforward</button>
-            <button class="ghost small" data-tone="playful">Playful (if it fits)</button>
-          </div>
+    <div id="game-area" class="w-full max-w-5xl p-4 sm:p-8">
+
+        <!-- Header -->
+        <header class="text-center mb-10">
+            <h1 class="text-4xl sm:text-5xl font-extrabold text-indigo-700 leading-tight">
+                Your Daily Dose of Delight
+            </h1>
+            <p id="progress-text" class="text-lg text-indigo-500 mt-2 font-semibold">
+                Tap the stars to uncover your strengths!
+            </p>
+        </header>
+
+        <!-- Start Screen / Game Complete Message -->
+        <div id="start-screen" class="bg-white/90 p-10 rounded-2xl shadow-2xl text-center transition-all duration-700 ease-in-out">
+            <h2 class="text-3xl font-bold text-indigo-700 mb-4">Ready for an Uplift?</h2>
+            <p class="text-gray-600 mb-6">Click the button below to hide the cards and begin the discovery game. Reveal them all to finish!</p>
+            <button id="start-button" class="px-8 py-3 bg-gradient-to-r from-purple-500 to-indigo-600 text-white font-bold rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition duration-300 ease-in-out">
+                Start Discovery
+            </button>
         </div>
 
-        <div class="panel">
-          <label><strong>Customize: Who & What</strong></label>
-          <input id="who" placeholder="Their name (e.g., Sara)" style="width:100%;padding:10px;border-radius:8px;margin-top:8px;background:transparent;border:1px solid rgba(255,255,255,0.03);color:inherit" />
-          <textarea id="rawReason" placeholder="What happened? Be brief and honest. Don't hide behind excuses."></textarea>
-
-          <div style="display:flex;gap:8px;margin-top:8px">
-            <button class="primary" id="buildBtn">Build Apology</button>
-            <button class="ghost" id="resetBtn">Reset</button>
-          </div>
+        <!-- The Card Grid (Initially Hidden) -->
+        <div id="card-grid" class="hidden grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-10">
+            <!-- Card Templates (Dynamic content will be loaded by JS) -->
         </div>
 
-        <div class="panel">
-          <label><strong>Your Apology</strong></label>
-          <textarea id="apologyOut" readonly placeholder="Your apology will appear here"></textarea>
-          <div style="display:flex;gap:8px;margin-top:8px">
-            <button class="primary" id="copyBtn">Copy</button>
-            <button class="ghost" id="sendBtn">Open Message</button>
-            <button class="ghost" id="smsBtn">Generate SMS</button>
-          </div>
-          <div style="margin-top:8px;color:var(--muted);font-size:13px">Tip: Keep it short. Own the mistake, express regret, propose a fix, and don't demand forgiveness.</div>
-        </div>
-
-      </div>
-
-      <aside class="right">
-        <div class="panel">
-          <h3 style="margin:0">Tiny gestures</h3>
-          <p style="margin:6px 0;color:var(--muted)">Pick a small thing to send or do — actions carry weight.</p>
-          <ul>
-            <li>Send flowers / a snack delivery.</li>
-            <li>Offer to meet and listen for 15 minutes.</li>
-            <li>Make a small, thoughtful playlist.</li>
-            <li>Write a short hand-written note.</li>
-          </ul>
-          <div style="display:flex;gap:8px;margin-top:12px">
-            <div class="gesture" style="flex:1">
-              <div class="flower">🌸</div>
-              <div style="flex:1;margin-left:8px;color:var(--muted)"><strong>Virtual bouquet</strong><div style="font-size:13px">Send a quick gif or image and a sincere line</div></div>
+        <!-- Game End Modal (Hidden by default) -->
+        <div id="modal-complete" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center hidden">
+            <div class="bg-white p-8 rounded-xl shadow-2xl text-center max-w-md w-11/12 border-4 border-yellow-400">
+                <div class="text-6xl mb-4 animate-bounce">✨</div>
+                <h3 class="text-3xl font-bold text-green-600 mb-3">Congratulations!</h3>
+                <p class="text-xl text-gray-700 mb-6">You've uncovered all your wonderful qualities. Keep shining!</p>
+                <button id="restart-button" class="px-6 py-3 bg-yellow-500 text-white font-bold rounded-full shadow-md hover:bg-yellow-600 transition duration-200">
+                    Play Again
+                </button>
             </div>
-          </div>
         </div>
 
-        <div class="panel" style="margin-top:12px">
-          <h4 style="margin:0">Quick templates</h4>
-          <ul id="templates">
-            <li><button class="ghost small" data-tpl="sincereTpl">Sincere: "[Name], I was wrong about [what]. I'm sorry. I understand how that hurt you and I want to make it right. Can we talk?"</button></li>
-            <li><button class="ghost small" data-tpl="directTpl">Direct: "[Name], I messed up. I'm sorry. I take responsibility and I'll do [fix]."</button></li>
-            <li><button class="ghost small" data-tpl="lightTpl">Light: "Hey [Name], I screwed this up — sorry. Can I make it up to you with coffee and one apology emoji? ☕🙏"</button></li>
-          </ul>
-        </div>
-
-        <div class="panel" style="margin-top:12px">
-          <h4 style="margin:0">Calm Tone</h4>
-          <p style="margin:6px 0;color:var(--muted)">Play a short calm sound to steady yourself before sending.</p>
-          <div style="display:flex;gap:8px"><button class="ghost small" id="playTone">Play</button><button class="ghost small" id="stopTone">Stop</button></div>
-        </div>
-      </aside>
-
-      <footer>Honest, concise, action-oriented. Want me to include a line that asks for a specific fix or boundary? Click Build and I'll add it.</footer>
     </div>
-  </div>
 
-  <script>
-    // State
-    let tone = 'sincere';
-    const toneButtons = document.querySelectorAll('[data-tone]');
-    toneButtons.forEach(b=> b.addEventListener('click', ()=>{ tone = b.getAttribute('data-tone'); toneButtons.forEach(x=>x.style.border='1px solid rgba(255,255,255,0.04)'); b.style.border='1px solid rgba(255,255,255,0.12)'; }));
+    <script>
+        // Use a function to safely define the data and logic
+        function setupUpliftGame() {
+            const cardsData = [
+                { title: "Incredible Empathy", message: "Your ability to understand others is a true superpower." },
+                { title: "Radiant Positivity", message: "You brighten every room you enter with your energy." },
+                { title: "Unwavering Resilience", message: "You handle every challenge with grace and strength." },
+                { title: "Pure Brilliance", message: "Your innovative ideas are inspiring to everyone around you." },
+                { title: "Creative Spark", message: "The world is richer because of your unique perspective." },
+                { title: "Genuine Kindness", message: "Small acts of kindness define who you are." }
+            ];
 
-    const buildBtn = document.getElementById('buildBtn');
-    const resetBtn = document.getElementById('resetBtn');
-    const who = document.getElementById('who');
-    const rawReason = document.getElementById('rawReason');
-    const apologyOut = document.getElementById('apologyOut');
-    const copyBtn = document.getElementById('copyBtn');
-    const sendBtn = document.getElementById('sendBtn');
-    const smsBtn = document.getElementById('smsBtn');
+            const grid = document.getElementById('card-grid');
+            const startScreen = document.getElementById('start-screen');
+            const startButton = document.getElementById('start-button');
+            const modalComplete = document.getElementById('modal-complete');
+            const restartButton = document.getElementById('restart-button');
+            const progressText = document.getElementById('progress-text');
+            
+            let cardsRevealed = 0;
+            let totalCards = cardsData.length;
 
-    function clean(s){ return s.trim(); }
+            /**
+             * Renders all card elements into the grid based on the data.
+             */
+            function renderCards() {
+                grid.innerHTML = '';
+                cardsData.forEach((data, index) => {
+                    const cardElement = document.createElement('div');
+                    cardElement.id = `card-${index}`;
+                    cardElement.className = 'card-hidden rounded-xl p-6 text-center shadow-lg transform hover:scale-[1.02] active:scale-[0.98] transition-all duration-300';
+                    cardElement.setAttribute('data-index', index);
+                    cardElement.setAttribute('data-revealed', 'false');
 
-    function buildApology(){
-      const n = clean(who.value) || '[Name]';
-      const reason = clean(rawReason.value) || '[what I did]';
-      let message = '';
-      if (tone === 'sincere'){
-        message = `${n}, I owe you an apology. I was wrong about ${reason}. I'm truly sorry for how that affected you. I take responsibility and I'd like to make it right — would you be open to talking or is there something I can do to fix this?`;
-      } else if (tone === 'light'){
-        message = `${n}, I messed up and I'm sorry about ${reason}. I didn't mean to hurt you. Can I make it up to you with coffee (or your favourite snack) and a proper apology?`;
-      } else if (tone === 'direct'){
-        message = `${n}, I messed up. Specifically: ${reason}. I'm sorry. I'll [do this fix]. I accept responsibility.`;
-      } else { // playful
-        message = `${n}, guilty as charged — I messed up with ${reason}. I'm sorry. Let me try to earn one forgiveness point (redeemable for a bad joke or a coffee).`;
-      }
-      apologyOut.value = message;
-    }
+                    // Content for the hidden state
+                    cardElement.innerHTML = `
+                        <div class="hidden-text p-6">Tap to Reveal 🌟</div>
+                        <div class="hidden">
+                            <h3 class="revealed-title mb-2">${data.title}</h3>
+                            <p class="revealed-message">${data.message}</p>
+                        </div>
+                    `;
 
-    buildBtn.addEventListener('click', ()=>{ buildApology(); playTone(220,0.6); });
-    resetBtn.addEventListener('click', ()=>{ who.value=''; rawReason.value=''; apologyOut.value=''; });
+                    cardElement.addEventListener('click', () => revealCard(cardElement, data));
+                    grid.appendChild(cardElement);
+                });
+            }
 
-    copyBtn.addEventListener('click', ()=>{ apologyOut.select(); document.execCommand('copy'); copyBtn.textContent='Copied'; setTimeout(()=>copyBtn.textContent='Copy',1200); });
+            /**
+             * Updates the card to its revealed state and checks for game completion.
+             * @param {HTMLElement} cardElement The card div being clicked.
+             * @param {Object} data The card's content data.
+             */
+            function revealCard(cardElement, data) {
+                if (cardElement.getAttribute('data-revealed') === 'true') {
+                    return; // Already revealed
+                }
 
-    sendBtn.addEventListener('click', ()=>{
-      const text = encodeURIComponent(apologyOut.value || '');
-      window.open('mailto:?subject=I\'d like to apologize&body='+text, '_blank');
-    });
+                cardsRevealed++;
+                
+                // 1. Update state and styles
+                cardElement.setAttribute('data-revealed', 'true');
+                cardElement.classList.remove('card-hidden');
+                cardElement.classList.add('card-revealed');
+                cardElement.style.pointerEvents = 'none'; // Disable further clicks
 
-    smsBtn.addEventListener('click', ()=>{
-      const text = encodeURIComponent(apologyOut.value || '');
-      // opens default sms on mobile, on desktop it may do nothing — still provide link
-      window.open('sms:?&body='+text,'_blank');
-    });
+                // 2. Animate content transition
+                cardElement.innerHTML = `
+                    <h3 class="revealed-title mb-2 opacity-0">${data.title}</h3>
+                    <p class="revealed-message opacity-0">${data.message}</p>
+                `;
+                // Simple fade-in animation for content
+                setTimeout(() => {
+                    cardElement.querySelector('.revealed-title').classList.remove('opacity-0');
+                    cardElement.querySelector('.revealed-message').classList.remove('opacity-0');
+                    updateProgress();
+                }, 100); 
+                
+                // 3. Check for Game Over
+                if (cardsRevealed === totalCards) {
+                    setTimeout(() => {
+                        modalComplete.classList.remove('hidden');
+                    }, 500); // Wait a bit after the last reveal
+                }
+            }
 
-    // Templates
-    document.getElementById('templates').addEventListener('click',(e)=>{
-      const btn = e.target.closest('button'); if(!btn) return; const tpl = btn.getAttribute('data-tpl'); let val='';
-      if(tpl==='sincereTpl') val='[Name], I was wrong about [what]. I\'m sorry. I understand how that hurt you and I want to make it right. Can we talk?';
-      if(tpl==='directTpl') val='[Name], I messed up. I\'m sorry. I take responsibility and I\'ll do [fix].';
-      if(tpl==='lightTpl') val='Hey [Name], I screwed this up — sorry. Can I make it up to you with coffee and a real apology? ☕';
-      rawReason.value = val; buildApology();
-    });
+            /**
+             * Updates the progress tracker text.
+             */
+            function updateProgress() {
+                progressText.textContent = `Progress: ${cardsRevealed} of ${totalCards} strengths uncovered!`;
+            }
 
-    // Simple WebAudio tone
-    let audioCtx=null, masterGain=null;
-    function ensureAudio(){ if (!audioCtx){ audioCtx = new (window.AudioContext||window.webkitAudioContext)(); masterGain = audioCtx.createGain(); masterGain.gain.value = 0.06; masterGain.connect(audioCtx.destination);} }
-    let toneOsc=null;
-    function playTone(freq,dur){ try{ ensureAudio(); if(toneOsc){ toneOsc.stop(); toneOsc=null;} toneOsc = audioCtx.createOscillator(); toneOsc.type='sine'; toneOsc.frequency.value = freq; const g = audioCtx.createGain(); toneOsc.connect(g); g.connect(masterGain); g.gain.setValueAtTime(0, audioCtx.currentTime); g.gain.linearRampToValueAtTime(0.05,audioCtx.currentTime+0.02); toneOsc.start(); g.gain.linearRampToValueAtTime(0.0001,audioCtx.currentTime+dur); setTimeout(()=>{ try{ toneOsc.stop(); }catch(e){} toneOsc=null; }, dur*1000+50); }catch(e){}
-    }
-    document.getElementById('playTone').addEventListener('click', ()=> playTone(220,2.5));
-    document.getElementById('stopTone').addEventListener('click', ()=>{ if (toneOsc) try{ toneOsc.stop(); }catch(e){} toneOsc=null; });
+            /**
+             * Resets game state and UI to initial conditions.
+             */
+            function resetGame() {
+                cardsRevealed = 0;
+                modalComplete.classList.add('hidden');
+                grid.classList.add('hidden');
+                startScreen.classList.remove('hidden');
+                updateProgress();
+            }
 
-    // keyboard quick build
-    window.addEventListener('keydown',(e)=>{ if(e.key==='Enter' && (e.metaKey||e.ctrlKey)){ e.preventDefault(); buildApology(); } });
+            /**
+             * Initializes the game view after the Start button is clicked.
+             */
+            function startGame() {
+                renderCards(); // Render cards in their hidden state
+                startScreen.classList.add('hidden');
+                grid.classList.remove('hidden');
+                updateProgress();
+            }
 
-    // Small accessibility
-    document.querySelectorAll('button').forEach(b=>{ b.addEventListener('focus', ()=>b.style.outline='2px solid rgba(255,255,255,0.06)'); b.addEventListener('blur', ()=>b.style.outline='none'); });
-  </script>
+            // --- Event Listeners ---
+            startButton.addEventListener('click', startGame);
+            restartButton.addEventListener('click', resetGame);
+
+            // Initial setup: Render cards, but keep the grid hidden until the user clicks Start.
+            renderCards();
+            updateProgress();
+        }
+
+        // Run the setup function once the window is fully loaded
+        window.onload = setupUpliftGame;
+    </script>
 </body>
 </html>
